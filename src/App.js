@@ -1,10 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import Formulario from './components/Formulario';
+import ListaContactos from './components/ListaContactos';
 
 const App = () => {
     return ( 
         <Contenedor>
             <Titulo>Lista de contactos</Titulo>
+            <Formulario />
+            <ListaContactos />
         </Contenedor>
      );
 }
