@@ -1,26 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import db from '../firebase/firebaseConfig';
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import Contacto from './Contacto';
 
 const ListaContactos = () => {
     const[contactos, cambiarContactos] = useState([]);
 
-    const obtenerTodosUsuarios = async () => {
-        try {
-           const query = await getDocs(collection(db, "usuarios"))
-           const allUsers = [];
-           query.forEach( doc => {
-            allUsers.push({id: doc.id, nombre: doc.data().nombre, correo: doc.data().correo})
-           })
-           cambiarContactos(allUsers);
-        } catch (error) {
-            console.error('Ocurrio un error', error)
-        }
-    }
+    // const obtenerTodosUsuarios = async () => {
+    //     try {
+    //        const query = await getDocs(collection(db, "usuarios"))
+    //        const allUsers = [];
+    //        query.forEach( doc => {
+    //         allUsers.push({id: doc.id, nombre: doc.data().nombre, correo: doc.data().correo})
+    //        })
+    //        cambiarContactos(allUsers);
+    //     } catch (error) {
+    //         console.error('Ocurrio un error', error)
+    //     }
+    // }
     
-    obtenerTodosUsuarios();
+    // obtenerTodosUsuarios();
+    useEffect(() => {
+        onSnapshot(collection(db,"usuarios"), (snapshot) => {
+            cambiarContactos(snapshot.docs.map((doc) => {
+                return { ...doc.data(), id: doc.id }
+            }));
+        })
+    }, [])
 
     return (
         contactos.length > 0 &&
