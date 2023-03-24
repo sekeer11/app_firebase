@@ -1,36 +1,48 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import db from '../firebase/firebaseConfig';
+import { doc, updateDoc } from "firebase/firestore";
 
 const Contacto = ({id, nombre, correo}) => {
     const [editarTarea, cambiarEditarTarea] = useState(false);
     const [nombreEditado, editarNombre] = useState(nombre);
     const [correoEditado, editarCorreo] = useState(correo);
 
-    const onSubmit = (e) => {
+    const actualizarContacto = (e) => {
         e.preventDefault();
+        updateDoc(doc(db, "usuarios", id), {
+            nombre: nombreEditado,
+            correo: correoEditado
+        })
+        .then(() => console.log('Objeto actualizado correctamente'))
+        .catch((e) => console.log('Ocurrio un error', e))
+
+        cambiarEditarTarea(!editarTarea);
     }
     return ( 
         <ContenedorContacto>
             { editarTarea ? 
-                <form action='' onSubmit={onSubmit}>
+                <form action='' onSubmit={actualizarContacto}>
                     <Input 
+                        type="text"
                         name="nombre"
                         value={nombreEditado}
-                        onChange={() => editarNombre()}
+                        onChange={(e) => editarNombre(e.target.value)}
                     />
                     <Input 
+                        type="correo"
                         name="correo"
                         value={correoEditado}
-                        onChange={() => editarCorreo()}
+                        onChange={(e) => editarCorreo(e.target.value)}
                     />
                     <Boton type="submit"> Actualizar </Boton>
-                    <Boton onClick={() => cambiarEditarTarea(false)}> Cancelar </Boton>
+                    <Boton onClick={() => cambiarEditarTarea(!editarTarea)}> Cancelar </Boton>
                 </form>
             :
             <>
                 <Nombre> {nombre} </Nombre>
                 <Correo> {correo} </Correo>
-                <Boton onClick={() => cambiarEditarTarea(true)}> Actualizar </Boton>
+                <Boton onClick={() => cambiarEditarTarea(!editarTarea)}> Actualizar </Boton>
                 <Boton> Eliminar </Boton>
             </>
             }
