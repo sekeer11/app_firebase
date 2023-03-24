@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import db from '../firebase/firebaseConfig';
+import { collection, getDocs } from "firebase/firestore";
 import Contacto from './Contacto';
 
 const ListaContactos = () => {
-    const[contactos, cambiarContactos] = useState([
-        { id: 1, nombre: 'Jose', correo: 'jose@mail.com' },
-        { id: 2, nombre: 'Ari', correo: 'ari@mail.com' } 
-    ]);
+    const[contactos, cambiarContactos] = useState([]);
+
+    const obtenerTodosUsuarios = async () => {
+        try {
+           const query = await getDocs(collection(db, "usuarios"))
+           const allUsers = [];
+           query.forEach( doc => {
+            allUsers.push({id: doc.id, nombre: doc.data().nombre, correo: doc.data().correo})
+           })
+           cambiarContactos(allUsers);
+        } catch (error) {
+            console.error('Ocurrio un error', error)
+        }
+    }
+    
+    obtenerTodosUsuarios();
+
     return (
         contactos.length > 0 &&
         <ContenedorContactos>

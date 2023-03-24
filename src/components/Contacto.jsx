@@ -3,19 +3,28 @@ import styled from 'styled-components';
 
 const Contacto = ({id, nombre, correo}) => {
     const [editarTarea, cambiarEditarTarea] = useState(false);
+    const [nombreEditado, editarNombre] = useState(nombre);
+    const [correoEditado, editarCorreo] = useState(correo);
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+    }
     return ( 
         <ContenedorContacto>
             { editarTarea ? 
-                <form action=''>
+                <form action='' onSubmit={onSubmit}>
                     <Input 
                         name="nombre"
-                        value={nombre}
+                        value={nombreEditado}
+                        onChange={() => editarNombre()}
                     />
                     <Input 
                         name="correo"
-                        value={correo}
+                        value={correoEditado}
+                        onChange={() => editarCorreo()}
                     />
-                    <Boton> Actualizar </Boton>
+                    <Boton type="submit"> Actualizar </Boton>
+                    <Boton onClick={() => cambiarEditarTarea(false)}> Cancelar </Boton>
                 </form>
             :
             <>
