@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import db from '../firebase/firebaseConfig';
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 
 const Contacto = ({id, nombre, correo}) => {
     const [editarTarea, cambiarEditarTarea] = useState(false);
@@ -19,6 +19,13 @@ const Contacto = ({id, nombre, correo}) => {
 
         cambiarEditarTarea(!editarTarea);
     }
+
+    const eliminarContacto = (id) => {
+        deleteDoc(doc(db, 'usuarios', id))
+        .then(() => console.log(`Elemento ${nombre} ha sido borrado correctamente`))
+        .catch((error) => {console.log('Ocurrio un error al intentar borrar', error);})
+    }
+
     return ( 
         <ContenedorContacto>
             { editarTarea ? 
@@ -43,7 +50,7 @@ const Contacto = ({id, nombre, correo}) => {
                 <Nombre> {nombre} </Nombre>
                 <Correo> {correo} </Correo>
                 <Boton onClick={() => cambiarEditarTarea(!editarTarea)}> Actualizar </Boton>
-                <Boton> Eliminar </Boton>
+                <Boton onClick={ () => eliminarContacto(id)}> Eliminar </Boton>
             </>
             }
         </ContenedorContacto>
